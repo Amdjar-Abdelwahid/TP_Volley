@@ -70,7 +70,7 @@ public class EditEtudiantActivity extends AppCompatActivity {
             return;
         }
 
-        String url = "http://10.0.2.2/TP%20Volley/ws/updateEtudiant.php";
+        String url = "http://10.0.2.2/AppMobile/Tp_Volley/web_services_php/ws/updateEtudiant.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {

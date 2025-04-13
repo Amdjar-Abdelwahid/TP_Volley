@@ -83,7 +83,7 @@ public class EtudiantAdapter extends RecyclerView.Adapter<EtudiantAdapter.Etudia
     }
 
     private void deleteEtudiant(int id, final int position) {
-        String url = "http://10.0.2.2/TP%20Volley/ws/deleteEtudiant.php";
+        String url = "http://10.0.2.2/AppMobile/Tp_Volley/web_services_php/ws/deleteEtudiant.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {

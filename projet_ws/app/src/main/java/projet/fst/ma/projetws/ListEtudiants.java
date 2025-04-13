@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import projet.fst.ma.projetws.adapters.EtudiantAdapter;
 import projet.fst.ma.projetws.beans.Etudiant;
@@ -32,7 +34,8 @@ public class ListEtudiants extends AppCompatActivity {
 
     private RequestQueue requestQueue;
 
-    private final String selectUrl = "http://10.0.2.2/TP%20Volley/ws/loadEtudiant.php";
+    private final String selectUrl = "http://10.0.2.2/AppMobile/Tp_Volley/web_services_php/ws/loadEtudiant.php";
+
     public static final int EDIT_STUDENT_REQUEST_CODE = 100;
 
     @Override
@@ -78,10 +81,11 @@ public class ListEtudiants extends AppCompatActivity {
     public void loadEtudiants() {
         Log.d(TAG, "Tentative de connexion à " + selectUrl);
 
+        // Utilisons POST puisque c'est ce qui fonctionne dans Postman
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.POST,
+                Request.Method.POST, // Assurez-vous que c'est bien POST
                 selectUrl,
-                null,
+                null, // Pas de JSONObject à envoyer dans le corps
                 response -> {
                     Log.d(TAG, "Réponse reçue: " + response.toString());
                     try {
@@ -104,6 +108,10 @@ public class ListEtudiants extends AppCompatActivity {
 
                         adapter.notifyDataSetChanged();
                         Log.d(TAG, "Nombre total d'étudiants: " + etudiants.size());
+
+                        if (etudiants.size() == 0) {
+                            Log.d(TAG, "Aucun étudiant trouvé dans la réponse");
+                        }
                     } catch (Exception e) {
                         Log.e(TAG, "Erreur de parsing JSON: " + e.getMessage(), e);
                     }
@@ -117,7 +125,23 @@ public class ListEtudiants extends AppCompatActivity {
                         Log.e(TAG, "Pas de réponse réseau", error);
                     }
                 }
-        );
+        ) {
+            // Cette méthode override est importante pour les requêtes POST
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                return headers;
+            }
+
+            // Au cas où votre API attend des paramètres même vides
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                // Ajoutez des paramètres si nécessaire pour votre API POST
+                return params;
+            }
+        };
 
         jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
                 30000, // 30 secondes
